@@ -4,7 +4,7 @@
  */
 
 #include "metrics.h"
-#include "read_cpu_usage.h"
+// #include "read_cpu_usage.h"
 #include <errno.h>
 #include <prom.h>
 #include <promhttp.h>

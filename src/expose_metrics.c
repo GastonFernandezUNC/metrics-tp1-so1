@@ -98,8 +98,8 @@ void init_metrics()
     }
 
     // Registramos las métricas en el registro por defecto
-    if (prom_collector_registry_must_register_metric(cpu_usage_metric) != 0 ||
-        prom_collector_registry_must_register_metric(memory_usage_metric) != 0)
+    if (prom_collector_registry_must_register_metric(cpu_usage_metric) != NULL &&
+        prom_collector_registry_must_register_metric(memory_usage_metric) != NULL)
     {
         fprintf(stderr, "Error al registrar las métricas\n");
         return EXIT_FAILURE;

@@ -4,6 +4,7 @@
 # Executables
 *.exe
 *.out
+metrics
 
 # Compiled libraries
 *.a
