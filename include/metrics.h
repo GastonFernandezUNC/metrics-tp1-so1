@@ -10,6 +10,15 @@
 
 #define BUFFER_SIZE 256
 
+typedef struct{
+    unsigned long long memTotal;
+    unsigned long long memUsed;
+    unsigned long long memAvailable;
+    unsigned long long percentage;
+} memInfo;
+
+static memInfo mem;
+
 /**
  * @brief Obtiene el porcentaje de uso de memoria desde /proc/meminfo.
  *
@@ -18,7 +27,7 @@
  *
  * @return Uso de memoria como porcentaje (0.0 a 100.0), o -1.0 en caso de error.
  */
-double get_memory_usage();
+memInfo* get_memory_usage();
 
 /**
  * @brief Obtiene el porcentaje de uso de CPU desde /proc/stat.
