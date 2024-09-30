@@ -33,10 +33,19 @@ typedef struct{
     unsigned long long tx_errors;
 }netStats;
 
+typedef struct{
 
+    unsigned long long running_processes;
+    unsigned long long context_switching;
+
+}proc_stats;
+
+static proc_stats stat;
 static memInfo mem;
 static diskStats disk;
 static netStats net;
+
+proc_stats* get_procStats_usage();
 
 netStats* get_net_usage();
 

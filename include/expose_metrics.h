@@ -16,6 +16,8 @@
 
 #define BUFFER_SIZE 256
 
+void update_procStats_gauge();
+
 void update_net_gauge();
 
 void update_disk_gauge();

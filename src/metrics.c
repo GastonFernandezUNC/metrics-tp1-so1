@@ -2,6 +2,41 @@
 
 #define SLEEP_TIME 1.5
 
+proc_stats* get_procStats_usage(){
+    FILE* fp;
+    char buffer[BUFFER_SIZE];
+    unsigned long long running_processes = 0, context_switching = 0;
+
+    // Abrir el archivo /proc/stat
+    fp = fopen("/proc/stat", "r");
+    if (fp == NULL)
+    {
+        perror("Error al abrir /proc/stat");
+        return NULL;
+    }
+
+    // Leer los valores de estadísticas de procesos
+    while (fgets(buffer, sizeof(buffer), fp) != NULL)
+    {
+        if (sscanf(buffer, "procs_running %llu", &running_processes) == 1)
+        {
+            continue; // procs_running encontrado
+        }
+        if (sscanf(buffer, "ctxt %llu", &context_switching) == 1)
+        {
+            break; // ctxt encontrado, podemos dejar de leer
+        }
+    }
+
+    fclose(fp);
+
+    stat.running_processes = running_processes;
+    stat.context_switching = context_switching;
+
+    return &stat;
+    
+}
+
 netStats* get_net_usage(){
     FILE* fp;
     char buffer[BUFFER_SIZE];

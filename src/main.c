@@ -19,7 +19,8 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-        init_metrics();
+    // Call the function to initialize the metrics
+    init_metrics();
     // Bucle principal para actualizar las métricas cada segundo
     while (true)
     {
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
         update_memory_gauge();
         update_disk_gauge();
         update_net_gauge();
+        update_procStats_gauge();
         sleep(SLEEP_TIME);
     }
 

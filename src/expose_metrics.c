@@ -32,12 +32,19 @@ typedef struct{
     prom_gauge_t* tx_errors_metric;
 }expose_net_metrics;
 
+typedef struct{
+
+    prom_gauge_t* running_processes_metrics;
+    prom_gauge_t* context_switching_metrics;
+
+}expose_procStats_metrics;
+
+static expose_procStats_metrics statsMetrics;
 static expose_net_metrics netMetrics;
 static expose_disk_metrics diskMetrics;
 static expose_mem_metrics memMetrics;
 
-void update_cpu_gauge()
-{
+void update_cpu_gauge(){
     double usage = get_cpu_usage();
     if (usage >= 0)
     {
@@ -88,6 +95,17 @@ void update_net_gauge()
     prom_gauge_set(netMetrics.rx_errors_metric, net.rx_errors, NULL);
     prom_gauge_set(netMetrics.tx_errors_metric, net.tx_errors, NULL);
     pthread_mutex_unlock(&lock);
+}
+
+void update_procStats_gauge(){
+
+    proc_stats stat = *get_procStats_usage();
+
+    pthread_mutex_lock(&lock);
+    prom_gauge_set(statsMetrics.context_switching_metrics, stat.context_switching, NULL);
+    prom_gauge_set(statsMetrics.running_processes_metrics, stat.running_processes, NULL);
+    pthread_mutex_unlock(&lock);
+
 }
 
 void* expose_metrics(void* arg)
@@ -168,6 +186,16 @@ void _init_net_metrics(){
 
 }
 
+void _init_procStats_metrics(){
+
+    statsMetrics.context_switching_metrics = prom_gauge_new("context_switching","Cambios de Contexto",0,NULL);
+    statsMetrics.running_processes_metrics = prom_gauge_new("running_processes","Procesos en ejecucion",0,NULL);
+
+    prom_collector_registry_must_register_metric(statsMetrics.context_switching_metrics);
+    prom_collector_registry_must_register_metric(statsMetrics.running_processes_metrics);
+
+}
+
 void init_metrics()
 {
     // Inicializamos el mutex
@@ -188,6 +216,7 @@ void init_metrics()
     _init_cpu_metrics();
     _init_disk_metrics();
     _init_net_metrics();
+    _init_procStats_metrics();
 
 }
 
