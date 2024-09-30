@@ -44,6 +44,7 @@ static expose_net_metrics netMetrics;
 static expose_disk_metrics diskMetrics;
 static expose_mem_metrics memMetrics;
 
+//Funciones para actualizar los valores de las métricas
 void update_cpu_gauge(){
     double usage = get_cpu_usage();
     if (usage >= 0)
@@ -134,7 +135,7 @@ void* expose_metrics(void* arg)
     return NULL;
 }
 
-// Creamos la métrica para el uso de memoria
+// Iniciamos cada una de las metricas
 void _init_memory_metrics(){
 
     memMetrics.memory_percentage_metric = prom_gauge_new("memory_usage_percentage_in_MG", "Porcentaje de uso de memoria_en_MG", 0, NULL);
