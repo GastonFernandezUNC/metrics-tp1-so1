@@ -23,6 +23,16 @@ typedef struct{
     prom_gauge_t* writes_per_second_metric;
 }expose_disk_metrics;
 
+typedef struct{
+    prom_gauge_t* rx_bytes_metric;
+    prom_gauge_t* tx_bytes_metric;
+    prom_gauge_t* rx_packets_metric;
+    prom_gauge_t* tx_packets_metric;
+    prom_gauge_t* rx_errors_metric;
+    prom_gauge_t* tx_errors_metric;
+}expose_net_metrics;
+
+static expose_net_metrics netMetrics;
 static expose_disk_metrics diskMetrics;
 static expose_mem_metrics memMetrics;
 
@@ -63,6 +73,20 @@ void update_disk_gauge()
     prom_gauge_set(diskMetrics.writes_completed_metric, disk.writes_completed, NULL);
     prom_gauge_set(diskMetrics.reads_per_second_metric, disk.reads_per_second, NULL);
     prom_gauge_set(diskMetrics.writes_per_second_metric, disk.writes_per_second, NULL);
+    pthread_mutex_unlock(&lock);
+}
+
+void update_net_gauge()
+{
+    netStats net = *get_net_usage();
+    
+    pthread_mutex_lock(&lock);
+    prom_gauge_set(netMetrics.rx_bytes_metric, net.rx_bytes, NULL);
+    prom_gauge_set(netMetrics.tx_bytes_metric, net.tx_bytes, NULL);
+    prom_gauge_set(netMetrics.rx_packets_metric, net.rx_packets, NULL);
+    prom_gauge_set(netMetrics.tx_packets_metric, net.tx_packets, NULL);
+    prom_gauge_set(netMetrics.rx_errors_metric, net.rx_errors, NULL);
+    prom_gauge_set(netMetrics.tx_errors_metric, net.tx_errors, NULL);
     pthread_mutex_unlock(&lock);
 }
 
@@ -126,25 +150,44 @@ void _init_disk_metrics(){
     prom_collector_registry_must_register_metric(diskMetrics.writes_per_second_metric);
 }
 
+void _init_net_metrics(){
+    
+    netMetrics.rx_bytes_metric = prom_gauge_new("rx_bytes","Bytes Recibidos",0,NULL);
+    netMetrics.tx_bytes_metric = prom_gauge_new("tx_bytes","Bytes Transmitidos",0,NULL);
+    netMetrics.rx_packets_metric = prom_gauge_new("rx_packets","Paquetes Recibidos",0,NULL);
+    netMetrics.tx_packets_metric = prom_gauge_new("tx_packets","Paquetes Transmitidos",0,NULL);
+    netMetrics.rx_errors_metric = prom_gauge_new("rx_errors","Errores de Recepcion",0,NULL);
+    netMetrics.tx_errors_metric = prom_gauge_new("tx_errors","Errores de Transmision",0,NULL);
+
+    prom_collector_registry_must_register_metric(netMetrics.rx_bytes_metric);
+    prom_collector_registry_must_register_metric(netMetrics.tx_bytes_metric);
+    prom_collector_registry_must_register_metric(netMetrics.rx_packets_metric);
+    prom_collector_registry_must_register_metric(netMetrics.tx_packets_metric);
+    prom_collector_registry_must_register_metric(netMetrics.rx_errors_metric);
+    prom_collector_registry_must_register_metric(netMetrics.tx_errors_metric);
+
+}
+
 void init_metrics()
 {
     // Inicializamos el mutex
     if (pthread_mutex_init(&lock, NULL) != 0)
     {
         fprintf(stderr, "Error al inicializar el mutex\n");
-        return EXIT_FAILURE;
+        return (void)EXIT_FAILURE;
     }
 
     // Inicializamos el registro de coleccionistas de Prometheus
     if (prom_collector_registry_default_init() != 0)
     {
         fprintf(stderr, "Error al inicializar el registro de Prometheus\n");
-        return EXIT_FAILURE;
+        return (void)EXIT_FAILURE;
     }
 
     _init_memory_metrics();
     _init_cpu_metrics();
     _init_disk_metrics();
+    _init_net_metrics();
 
 }
 

@@ -24,8 +24,21 @@ typedef struct{
     unsigned long long writes_per_second;
 } diskStats;
 
+typedef struct{
+    unsigned long long rx_bytes;
+    unsigned long long tx_bytes;
+    unsigned long long rx_packets;
+    unsigned long long tx_packets;
+    unsigned long long rx_errors;
+    unsigned long long tx_errors;
+}netStats;
+
+
 static memInfo mem;
 static diskStats disk;
+static netStats net;
+
+netStats* get_net_usage();
 
 diskStats* get_disk_usage();
 

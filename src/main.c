@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
         update_cpu_gauge();
         update_memory_gauge();
         update_disk_gauge();
+        update_net_gauge();
         sleep(SLEEP_TIME);
     }
 

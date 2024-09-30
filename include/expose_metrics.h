@@ -16,6 +16,10 @@
 
 #define BUFFER_SIZE 256
 
+void update_net_gauge();
+
+void update_disk_gauge();
+
 /**
  * @brief Actualiza la métrica de uso de CPU.
  */

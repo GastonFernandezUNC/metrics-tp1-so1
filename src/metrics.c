@@ -2,6 +2,45 @@
 
 #define SLEEP_TIME 1.5
 
+netStats* get_net_usage(){
+    FILE* fp;
+    char buffer[BUFFER_SIZE];
+    char device_name[32];
+    unsigned long long rx_bytes = 0, rx_packets = 0, rx_errors = 0, tx_bytes = 0, tx_packets = 0, tx_errors = 0;
+    unsigned long long trash;
+
+    // Abrir el archivo /proc/diskstats
+    fp = fopen("/proc/net/dev", "r");
+    if (fp == NULL)
+    {
+        perror("Error al abrir /proc/net/dev");
+        return NULL;
+    }
+
+    // Leer los valores de estadísticas de disco
+    while (fgets(buffer, sizeof(buffer), fp) != NULL)
+    {
+        if (sscanf(buffer, "%31s %llu %llu %llu %*u %*u %*u %*u %*u %llu %llu %llu", 
+            device_name, &rx_bytes, &rx_packets, &rx_errors, &tx_bytes, &tx_packets, &tx_errors) == 7){
+                if (strcmp(device_name, "wlp2s0:") == 0) break; // Exit the loop if the desired device is found
+        }
+        
+    }
+    sleep(SLEEP_TIME);
+    // rewind(fp);
+
+    fclose(fp);
+
+    net.rx_bytes = rx_bytes;
+    net.rx_packets = rx_packets;
+    net.rx_errors = rx_errors;
+    net.tx_bytes = tx_bytes;
+    net.tx_packets = tx_packets;
+    net.tx_errors = tx_errors;
+    
+    return &net;
+}
+
 diskStats* get_disk_usage()
 {
     FILE* fp;
@@ -38,13 +77,6 @@ diskStats* get_disk_usage()
     disk.writes_completed = writes_completed[1];
     disk.reads_per_second = (reads_completed_successfully[1]-reads_completed_successfully[0]/SLEEP_TIME);
     disk.writes_per_second = (writes_completed[1]-writes_completed[0])/SLEEP_TIME;
-
-    printf("Disk statistics for device %s:\n", device_name);
-    printf("Reads completed successfully: %llu\n", disk.reads_completed_successfully);
-    printf("Writes completed: %llu\n", disk.writes_completed);
-    printf("Reads per second: %llu\n", disk.reads_per_second);
-    printf("Writes per second: %llu\n", disk.writes_per_second);
-    
 
     return &disk;
 }
