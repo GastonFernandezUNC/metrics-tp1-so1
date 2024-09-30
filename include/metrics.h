@@ -17,7 +17,17 @@ typedef struct{
     unsigned long long percentage;
 } memInfo;
 
+typedef struct{
+    unsigned long long reads_completed_successfully;
+    unsigned long long writes_completed;
+    unsigned long long reads_per_second;
+    unsigned long long writes_per_second;
+} diskStats;
+
 static memInfo mem;
+static diskStats disk;
+
+diskStats* get_disk_usage();
 
 /**
  * @brief Obtiene el porcentaje de uso de memoria desde /proc/meminfo.

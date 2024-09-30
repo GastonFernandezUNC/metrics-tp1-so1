@@ -1,5 +1,54 @@
 #include "metrics.h"
 
+#define SLEEP_TIME 1.5
+
+diskStats* get_disk_usage()
+{
+    FILE* fp;
+    char buffer[BUFFER_SIZE];
+    char device_name[32];
+    unsigned long long reads_completed_successfully[2], writes_completed[2];
+    unsigned long long reads_per_second = 0, writes_per_second = 0;
+    unsigned long long trash;
+
+    // Abrir el archivo /proc/diskstats
+    fp = fopen("/proc/diskstats", "r");
+    if (fp == NULL)
+    {
+        perror("Error al abrir /proc/diskstats");
+        return NULL;
+    }
+
+    // Leer los valores de estadísticas de disco
+    for(int i = 0; i < 2 ; i ++){
+        while (fgets(buffer, sizeof(buffer), fp) != NULL)
+        {
+            if (sscanf(buffer, "%llu %llu %31s %llu %llu %llu %llu %llu", 
+                &trash, &trash, device_name, &reads_completed_successfully[i], &trash,
+                &trash, &trash, &writes_completed[i]) == 8){
+                    if(strcmp(device_name, "sda") == 0) break; // gets out of the loop
+                }
+        }
+        sleep(SLEEP_TIME);
+        rewind(fp);
+    }
+    fclose(fp);
+
+    disk.reads_completed_successfully = reads_completed_successfully[1];
+    disk.writes_completed = writes_completed[1];
+    disk.reads_per_second = (reads_completed_successfully[1]-reads_completed_successfully[0]/SLEEP_TIME);
+    disk.writes_per_second = (writes_completed[1]-writes_completed[0])/SLEEP_TIME;
+
+    printf("Disk statistics for device %s:\n", device_name);
+    printf("Reads completed successfully: %llu\n", disk.reads_completed_successfully);
+    printf("Writes completed: %llu\n", disk.writes_completed);
+    printf("Reads per second: %llu\n", disk.reads_per_second);
+    printf("Writes per second: %llu\n", disk.writes_per_second);
+    
+
+    return &disk;
+}
+
 memInfo* get_memory_usage()
 {
     FILE* fp;
@@ -40,9 +89,9 @@ memInfo* get_memory_usage()
     double used_mem = total_mem - free_mem;
     double mem_usage_percent = (used_mem / total_mem) * 100.0;
 
-    mem.memAvailable = free_mem;
-    mem.memUsed = used_mem;
-    mem.memTotal = total_mem;
+    mem.memAvailable = free_mem/1000; // en MB
+    mem.memUsed = used_mem/1000;      // en MB
+    mem.memTotal = total_mem/1000;    // en MB
     mem.percentage = mem_usage_percent;
 
     return &mem;
