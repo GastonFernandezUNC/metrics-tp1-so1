@@ -16,6 +16,7 @@ typedef struct{
 
 }expose_mem_metrics;
 
+/* prometheus metrics for disk stats */
 typedef struct{
     prom_gauge_t* reads_completed_successfully_metric;
     prom_gauge_t* writes_completed_metric;
@@ -23,6 +24,7 @@ typedef struct{
     prom_gauge_t* writes_per_second_metric;
 }expose_disk_metrics;
 
+/* prometheus metrics for net stats*/
 typedef struct{
     prom_gauge_t* rx_bytes_metric;
     prom_gauge_t* tx_bytes_metric;
@@ -32,6 +34,7 @@ typedef struct{
     prom_gauge_t* tx_errors_metric;
 }expose_net_metrics;
 
+/* prometheus metrics for processes stats*/
 typedef struct{
 
     prom_gauge_t* running_processes_metrics;
@@ -39,12 +42,13 @@ typedef struct{
 
 }expose_procStats_metrics;
 
+// static to be accessed across the functions
 static expose_procStats_metrics statsMetrics;
 static expose_net_metrics netMetrics;
 static expose_disk_metrics diskMetrics;
 static expose_mem_metrics memMetrics;
 
-//Funciones para actualizar los valores de las métricas
+//Funciones para actualizar los valores de las métricas de CPU
 void update_cpu_gauge(){
     double usage = get_cpu_usage();
     if (usage >= 0)
@@ -59,6 +63,7 @@ void update_cpu_gauge(){
     }
 }
 
+//Funciones para actualizar los valores de las métricas de memoria
 void update_memory_gauge()
 {
     memInfo mem = *get_memory_usage();
@@ -72,6 +77,7 @@ void update_memory_gauge()
 
 }
 
+//Funciones para actualizar los valores de las métricas de disco
 void update_disk_gauge()
 {
     diskStats disk = *get_disk_usage();
@@ -84,6 +90,7 @@ void update_disk_gauge()
     pthread_mutex_unlock(&lock);
 }
 
+//Funciones para actualizar los valores de las métricas de red
 void update_net_gauge()
 {
     netStats net = *get_net_usage();
@@ -98,6 +105,7 @@ void update_net_gauge()
     pthread_mutex_unlock(&lock);
 }
 
+//Funciones para actualizar los valores de las métricas de procesos
 void update_procStats_gauge(){
 
     proc_stats stat = *get_procStats_usage();
@@ -109,6 +117,7 @@ void update_procStats_gauge(){
 
 }
 
+//Función del hilo para exponer las métricas vía HTTP en el puerto 8000
 void* expose_metrics(void* arg)
 {
     (void)arg; // Argumento no utilizado
@@ -150,6 +159,7 @@ void _init_memory_metrics(){
 
 }
 
+/* initialices cpu metrics */
 void _init_cpu_metrics(){
 
     cpu_usage_metric = prom_gauge_new("cpu_usage_percentage", "Porcentaje de uso de CPU", 0, NULL);
@@ -157,6 +167,7 @@ void _init_cpu_metrics(){
 
 }
 
+/* initialices disk metrics */
 void _init_disk_metrics(){
     diskMetrics.reads_completed_successfully_metric = prom_gauge_new("reads_completed_successfully","Lecturas Completadas Exitosamente",0,NULL);
     diskMetrics.writes_completed_metric = prom_gauge_new("writes_completed","Escrituras Completadas",0,NULL);
@@ -169,6 +180,7 @@ void _init_disk_metrics(){
     prom_collector_registry_must_register_metric(diskMetrics.writes_per_second_metric);
 }
 
+/* initialices net metrics */
 void _init_net_metrics(){
     
     netMetrics.rx_bytes_metric = prom_gauge_new("rx_bytes","Bytes Recibidos",0,NULL);
@@ -187,6 +199,7 @@ void _init_net_metrics(){
 
 }
 
+/* initialices procStats metrics */
 void _init_procStats_metrics(){
 
     statsMetrics.context_switching_metrics = prom_gauge_new("context_switching","Cambios de Contexto",0,NULL);
@@ -197,6 +210,7 @@ void _init_procStats_metrics(){
 
 }
 
+// Inicializamos el mutex y las métricas
 void init_metrics()
 {
     // Inicializamos el mutex
@@ -221,6 +235,7 @@ void init_metrics()
 
 }
 
+// Destruimos el mutex
 void destroy_mutex()
 {
     pthread_mutex_destroy(&lock);

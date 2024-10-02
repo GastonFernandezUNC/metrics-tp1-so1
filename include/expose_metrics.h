@@ -16,10 +16,20 @@
 
 #define BUFFER_SIZE 256
 
+/**
+ * @brief Actualiza las métricas de running processes
+ * y de context switching.
+ */
 void update_procStats_gauge();
 
+/**
+ * @brief Actualiza las métricas de uso de red.
+ */
 void update_net_gauge();
 
+/**
+ * @brief Actualiza las métricas de uso de disco.
+ */
 void update_disk_gauge();
 
 /**
