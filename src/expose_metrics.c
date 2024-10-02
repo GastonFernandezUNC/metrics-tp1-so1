@@ -9,10 +9,16 @@ static prom_gauge_t* cpu_usage_metric;
 /** Métrica de Prometheus para el uso de memoria */
 typedef struct
 {
-
+    // Porcentaje de uso de memoria
     prom_gauge_t* memory_percentage_metric;
+
+    // Memoria total
     prom_gauge_t* memory_total_metric;
+
+    // Memoria disponible
     prom_gauge_t* memory_available_metric;
+
+    // Memoria usada
     prom_gauge_t* memory_used_metric;
 
 } expose_mem_metrics;
@@ -20,36 +26,64 @@ typedef struct
 /* prometheus metrics for disk stats */
 typedef struct
 {
+    // Lecturas completadas exitosamente
     prom_gauge_t* reads_completed_successfully_metric;
+
+    // Escrituras completadas
     prom_gauge_t* writes_completed_metric;
+
+    // Lecturas por segundo
     prom_gauge_t* reads_per_second_metric;
+
+    // Escrituras por segundo
     prom_gauge_t* writes_per_second_metric;
+
 } expose_disk_metrics;
 
 /* prometheus metrics for net stats*/
 typedef struct
 {
+    // Bytes recibidos
     prom_gauge_t* rx_bytes_metric;
+
+    // Bytes transmitidos
     prom_gauge_t* tx_bytes_metric;
+
+    // Paquetes recibidos
     prom_gauge_t* rx_packets_metric;
+
+    // Paquetes transmitidos
     prom_gauge_t* tx_packets_metric;
+
+    // Errores en recepción
     prom_gauge_t* rx_errors_metric;
+
+    // Errores en transmisión
     prom_gauge_t* tx_errors_metric;
+
 } expose_net_metrics;
 
 /* prometheus metrics for processes stats*/
 typedef struct
 {
-
+    // Procesos en ejecución
     prom_gauge_t* running_processes_metrics;
+
+    // Cambios de contexto
     prom_gauge_t* context_switching_metrics;
 
 } expose_procStats_metrics;
 
-// static to be accessed across the functions
+// Estructuras para almacenar las métricas de procesos
 static expose_procStats_metrics statsMetrics;
+
+// Estructuras para almacenar las métricas de red
 static expose_net_metrics netMetrics;
+
+// Estructuras para almacenar las métricas de disco
 static expose_disk_metrics diskMetrics;
+
+// Estructuras para almacenar las métricas de memoria
 static expose_mem_metrics memMetrics;
 
 // Funciones para actualizar los valores de las métricas de CPU

@@ -8,17 +8,25 @@
 #include <string.h>
 #include <unistd.h>
 
-#define BUFFER_SIZE 256
+#define BUFFER_SIZE 256 // Tamaño del buffer para leer archivos
 
 /*
     Struct to save the memory information
 */
 typedef struct
 {
+    // total memory
     unsigned long long memTotal;
+
+    // used memory
     unsigned long long memUsed;
+
+    // available memory
     unsigned long long memAvailable;
+
+    // memory percentage
     unsigned long long percentage;
+
 } memInfo;
 
 /*
@@ -26,10 +34,18 @@ typedef struct
 */
 typedef struct
 {
+    // reads completed successfully
     unsigned long long reads_completed_successfully;
+
+    // writes completed
     unsigned long long writes_completed;
+
+    // reads per second
     unsigned long long reads_per_second;
+
+    // writes per second
     unsigned long long writes_per_second;
+
 } diskStats;
 
 /*
@@ -37,12 +53,24 @@ typedef struct
 */
 typedef struct
 {
+    // bytes received
     unsigned long long rx_bytes;
+
+    // bytes transmitted
     unsigned long long tx_bytes;
+
+    // packets received
     unsigned long long rx_packets;
+
+    // packets transmitted
     unsigned long long tx_packets;
+
+    // errors in reception
     unsigned long long rx_errors;
+
+    // errors in transmission
     unsigned long long tx_errors;
+
 } netStats;
 
 /*
@@ -50,8 +78,10 @@ typedef struct
 */
 typedef struct
 {
-
+    // running processes
     unsigned long long running_processes;
+
+    // context switching
     unsigned long long context_switching;
 
 } proc_stats;
@@ -60,10 +90,10 @@ typedef struct
     static values to be accessed from the functions
 */
 
-static proc_stats stat;
-static memInfo mem;
-static diskStats disk;
-static netStats net;
+static proc_stats stat; // struct to save the process information
+static memInfo mem;     // struct to save the memory information
+static diskStats disk;  // struct to save the disk information
+static netStats net;    // struct to save the network information
 
 /*
     Returns a pointer to the struct with the process information

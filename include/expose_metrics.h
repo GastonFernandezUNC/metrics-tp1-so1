@@ -4,7 +4,6 @@
  */
 
 #include "metrics.h"
-// #include "read_cpu_usage.h"
 #include <errno.h>
 #include <prom.h>
 #include <promhttp.h>
@@ -12,8 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> // Para sleep
+#include <unistd.h>
 
+// buffer size for reading files
 #define BUFFER_SIZE 256
 
 /**
