@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     }
 
     /**
-    * @brief exit function
-    */
+     * @brief exit function
+     */
     return EXIT_SUCCESS;
 }

@@ -12,23 +12,23 @@ static prom_gauge_t* cpu_usage_metric;
 typedef struct
 {
     /**
-    * @brief memory_percentage_metric
-    */
+     * @brief memory_percentage_metric
+     */
     prom_gauge_t* memory_percentage_metric;
 
     /**
-    * @brief memory_total_metric
-    */
+     * @brief memory_total_metric
+     */
     prom_gauge_t* memory_total_metric;
 
     /**
-    * @brief memory_available_metric
-    */
+     * @brief memory_available_metric
+     */
     prom_gauge_t* memory_available_metric;
 
     /**
-    * @brief memory_used_metric
-    */
+     * @brief memory_used_metric
+     */
     prom_gauge_t* memory_used_metric;
 
 } expose_mem_metrics;
@@ -39,23 +39,23 @@ typedef struct
 typedef struct
 {
     /**
-    * @brief reads_completed_successfully_metric
-    */   
+     * @brief reads_completed_successfully_metric
+     */
     prom_gauge_t* reads_completed_successfully_metric;
 
     /**
-    * @brief writes_completed_metric
-    */
+     * @brief writes_completed_metric
+     */
     prom_gauge_t* writes_completed_metric;
 
     /**
-    * @brief reads_per_second_metric
-    */
+     * @brief reads_per_second_metric
+     */
     prom_gauge_t* reads_per_second_metric;
 
     /**
-    * @brief writes_per_second_metric
-    */
+     * @brief writes_per_second_metric
+     */
     prom_gauge_t* writes_per_second_metric;
 
 } expose_disk_metrics;
@@ -69,7 +69,7 @@ typedef struct
      * @brief rx_bytes_metric
      */
     prom_gauge_t* rx_bytes_metric;
-    
+
     /**
      * @brief tx_bytes_metric
      */
