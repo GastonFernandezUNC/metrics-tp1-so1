@@ -6,70 +6,110 @@ pthread_mutex_t lock;
 /** Métrica de Prometheus para el uso de CPU */
 static prom_gauge_t* cpu_usage_metric;
 
-/** Métrica de Prometheus para el uso de memoria */
+/**
+ * @brief Struct to save the mem metrics.
+ */
 typedef struct
 {
-    // Porcentaje de uso de memoria
+    /**
+    * @brief memory_percentage_metric
+    */
     prom_gauge_t* memory_percentage_metric;
 
-    // Memoria total
+    /**
+    * @brief memory_total_metric
+    */
     prom_gauge_t* memory_total_metric;
 
-    // Memoria disponible
+    /**
+    * @brief memory_available_metric
+    */
     prom_gauge_t* memory_available_metric;
 
-    // Memoria usada
+    /**
+    * @brief memory_used_metric
+    */
     prom_gauge_t* memory_used_metric;
 
 } expose_mem_metrics;
 
-/* prometheus metrics for disk stats */
+/**
+ * @brief Struct to save the disk metrics.
+ */
 typedef struct
 {
-    // Lecturas completadas exitosamente
+    /**
+    * @brief reads_completed_successfully_metric
+    */   
     prom_gauge_t* reads_completed_successfully_metric;
 
-    // Escrituras completadas
+    /**
+    * @brief writes_completed_metric
+    */
     prom_gauge_t* writes_completed_metric;
 
-    // Lecturas por segundo
+    /**
+    * @brief reads_per_second_metric
+    */
     prom_gauge_t* reads_per_second_metric;
 
-    // Escrituras por segundo
+    /**
+    * @brief writes_per_second_metric
+    */
     prom_gauge_t* writes_per_second_metric;
 
 } expose_disk_metrics;
 
-/* prometheus metrics for net stats*/
+/**
+ * @brief Struct to save the network statistics.
+ */
 typedef struct
 {
-    // Bytes recibidos
+    /**
+     * @brief rx_bytes_metric
+     */
     prom_gauge_t* rx_bytes_metric;
-
-    // Bytes transmitidos
+    
+    /**
+     * @brief tx_bytes_metric
+     */
     prom_gauge_t* tx_bytes_metric;
 
-    // Paquetes recibidos
+    /**
+     * @brief rx_packets_metric
+     */
     prom_gauge_t* rx_packets_metric;
 
-    // Paquetes transmitidos
+    /**
+     * @brief tx_packets_metric
+     */
     prom_gauge_t* tx_packets_metric;
 
-    // Errores en recepción
+    /**
+     * @brief rx_errors_metric
+     */
     prom_gauge_t* rx_errors_metric;
 
-    // Errores en transmisión
+    /**
+     * @brief tx_errors_metric
+     */
     prom_gauge_t* tx_errors_metric;
 
 } expose_net_metrics;
 
-/* prometheus metrics for processes stats*/
+/**
+ * @brief Struct to save the processes statistics.
+ */
 typedef struct
 {
-    // Procesos en ejecución
+    /**
+     * @brief running_processes_metrics
+     */
     prom_gauge_t* running_processes_metrics;
 
-    // Cambios de contexto
+    /**
+     * @brief context_switching_metrics
+     */
     prom_gauge_t* context_switching_metrics;
 
 } expose_procStats_metrics;

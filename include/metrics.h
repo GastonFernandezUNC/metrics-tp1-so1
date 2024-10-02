@@ -8,23 +8,37 @@
 #include <string.h>
 #include <unistd.h>
 
+/**
+ * @brief Size of the buffer used for storing data.
+ */
 #define BUFFER_SIZE 256 // Tamaño del buffer para leer archivos
 
 /*
     Struct to save the memory information
 */
+/**
+ * @brief Struct to save the memory information.
+ */
 typedef struct
 {
-    // total memory
+    /**
+     * @brief Total memory available.
+     */
     unsigned long long memTotal;
 
-    // used memory
-    unsigned long long memUsed;
-
-    // available memory
+    /**
+     * @brief Free memory available.
+     */
     unsigned long long memAvailable;
 
-    // memory percentage
+    /**
+     * @brief Used memory.
+     */
+    unsigned long long memUsed;
+
+    /**
+     * @brief Percentage of used memory.
+     */
     unsigned long long percentage;
 
 } memInfo;
@@ -32,43 +46,66 @@ typedef struct
 /*
     Struct to save the disk information
 */
+/**
+ * @brief Struct to save the disk information.
+ */
 typedef struct
 {
-    // reads completed successfully
+    /**
+     * @brief Reads completed successfully.
+     */
     unsigned long long reads_completed_successfully;
 
-    // writes completed
+    /**
+     * @brief Writes completed.
+     */
     unsigned long long writes_completed;
 
-    // reads per second
+    /**
+     * @brief Reads per second.
+     */
     unsigned long long reads_per_second;
 
-    // writes per second
+    /**
+     * @brief Writes per second.
+     */
     unsigned long long writes_per_second;
 
 } diskStats;
 
-/*
-    Struct to save the network information
-*/
+/**
+ * @brief Struct to save the network statistics.
+ */
 typedef struct
 {
-    // bytes received
+    /**
+     * @brief Total bytes received.
+     */
     unsigned long long rx_bytes;
 
-    // bytes transmitted
+    /**
+     * @brief Total bytes transmitted.
+     */
     unsigned long long tx_bytes;
 
-    // packets received
+    /**
+     * @brief Total packets received.
+     */
     unsigned long long rx_packets;
 
-    // packets transmitted
+    /**
+     * @brief Total packets transmitted.
+     */
     unsigned long long tx_packets;
 
-    // errors in reception
+    /**
+     * @brief Total receive errors.
+     */
     unsigned long long rx_errors;
 
-    // errors in transmission
+    /**
+     * @brief Total transmit errors.
+     */
     unsigned long long tx_errors;
 
 } netStats;
@@ -76,12 +113,19 @@ typedef struct
 /*
     Struct to save the processes information
 */
+/**
+ * @brief Struct to save the processes information.
+ */
 typedef struct
 {
-    // running processes
+    /**
+     * @brief Number of running processes.
+     */
     unsigned long long running_processes;
 
-    // context switching
+    /**
+     * @brief Number of context switches.
+     */
     unsigned long long context_switching;
 
 } proc_stats;
@@ -95,24 +139,44 @@ static memInfo mem;     // struct to save the memory information
 static diskStats disk;  // struct to save the disk information
 static netStats net;    // struct to save the network information
 
-/*
-    Returns a pointer to the struct with the process information
-*/
+/**
+ * @brief Retrieves the usage statistics of the process.
+ *
+ * This function collects and returns various usage statistics
+ * related to the process, such as CPU usage, memory usage, etc.
+ *
+ * @return A structure containing the process usage statistics.
+ */
 proc_stats* get_procStats_usage();
 
-/*
-    Returns a pointer to the struct with the net information
-*/
+/**
+ * @brief Returns a pointer to the struct with the network information.
+ *
+ * This function provides access to the network usage statistics
+ * by returning a pointer to the structure that contains this information.
+ *
+ * @return A pointer to the structure containing the network usage statistics.
+ */
 netStats* get_net_usage();
 
-/*
-    Returns a pointer to the struct with the disk information
-*/
+/**
+ * @brief Returns a pointer to the struct with the disk information.
+ *
+ * This function provides access to the disk usage statistics
+ * by returning a pointer to the structure that contains this information.
+ *
+ * @return A pointer to the structure containing the disk usage statistics.
+ */
 diskStats* get_disk_usage();
 
-/*
-    Returns a pointer to the struct with the memory information
-*/
+/**
+ * @brief Returns a pointer to the struct with the memory information.
+ *
+ * This function provides access to the memory usage statistics
+ * by returning a pointer to the structure that contains this information.
+ *
+ * @return A pointer to the structure containing the memory usage statistics.
+ */
 memInfo* get_memory_usage();
 
 /**

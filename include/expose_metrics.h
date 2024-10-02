@@ -13,7 +13,9 @@
 #include <string.h>
 #include <unistd.h>
 
-// buffer size for reading files
+/**
+ * @brief Size of the buffer used for storing data.
+ */
 #define BUFFER_SIZE 256
 
 /**

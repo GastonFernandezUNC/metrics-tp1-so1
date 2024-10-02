@@ -6,8 +6,14 @@
 #include "expose_metrics.h"
 #include <stdbool.h>
 
+/**
+ * @brief sleep
+ */
 #define SLEEP_TIME 1
 
+/**
+ * @brief main
+ */
 int main(int argc, char* argv[])
 {
 
@@ -32,5 +38,8 @@ int main(int argc, char* argv[])
         sleep(SLEEP_TIME);
     }
 
+    /**
+    * @brief exit function
+    */
     return EXIT_SUCCESS;
 }
