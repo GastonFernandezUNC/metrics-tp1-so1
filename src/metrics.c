@@ -2,7 +2,8 @@
 
 #define SLEEP_TIME 1.5
 
-proc_stats* get_procStats_usage(){
+proc_stats* get_procStats_usage()
+{
     FILE* fp;
     char buffer[BUFFER_SIZE];
     unsigned long long running_processes = 0, context_switching = 0;
@@ -34,10 +35,10 @@ proc_stats* get_procStats_usage(){
     stat.context_switching = context_switching;
 
     return &stat;
-    
 }
 
-netStats* get_net_usage(){
+netStats* get_net_usage()
+{
     FILE* fp;
     char buffer[BUFFER_SIZE];
     char device_name[32];
@@ -55,11 +56,12 @@ netStats* get_net_usage(){
     // Leer los valores de estadísticas de disco
     while (fgets(buffer, sizeof(buffer), fp) != NULL)
     {
-        if (sscanf(buffer, "%31s %llu %llu %llu %*u %*u %*u %*u %*u %llu %llu %llu", 
-            device_name, &rx_bytes, &rx_packets, &rx_errors, &tx_bytes, &tx_packets, &tx_errors) == 7){
-                if (strcmp(device_name, "wlp2s0:") == 0) break; // Exit the loop if the desired device is found
+        if (sscanf(buffer, "%31s %llu %llu %llu %*u %*u %*u %*u %*u %llu %llu %llu", device_name, &rx_bytes,
+                   &rx_packets, &rx_errors, &tx_bytes, &tx_packets, &tx_errors) == 7)
+        {
+            if (strcmp(device_name, "wlp2s0:") == 0)
+                break; // Exit the loop if the desired device is found
         }
-        
     }
     sleep(SLEEP_TIME);
     // rewind(fp);
@@ -72,7 +74,7 @@ netStats* get_net_usage(){
     net.tx_bytes = tx_bytes;
     net.tx_packets = tx_packets;
     net.tx_errors = tx_errors;
-    
+
     return &net;
 }
 
@@ -94,14 +96,16 @@ diskStats* get_disk_usage()
     }
 
     // Leer los valores de estadísticas de disco
-    for(int i = 0; i < 2 ; i ++){
+    for (int i = 0; i < 2; i++)
+    {
         while (fgets(buffer, sizeof(buffer), fp) != NULL)
         {
-            if (sscanf(buffer, "%llu %llu %31s %llu %llu %llu %llu %llu", 
-                &trash, &trash, device_name, &reads_completed_successfully[i], &trash,
-                &trash, &trash, &writes_completed[i]) == 8){
-                    if(strcmp(device_name, "sda") == 0) break; // gets out of the loop
-                }
+            if (sscanf(buffer, "%llu %llu %31s %llu %llu %llu %llu %llu", &trash, &trash, device_name,
+                       &reads_completed_successfully[i], &trash, &trash, &trash, &writes_completed[i]) == 8)
+            {
+                if (strcmp(device_name, "sda") == 0)
+                    break; // gets out of the loop
+            }
         }
         sleep(SLEEP_TIME);
         rewind(fp);
@@ -110,8 +114,8 @@ diskStats* get_disk_usage()
 
     disk.reads_completed_successfully = reads_completed_successfully[1];
     disk.writes_completed = writes_completed[1];
-    disk.reads_per_second = (reads_completed_successfully[1]-reads_completed_successfully[0]/SLEEP_TIME);
-    disk.writes_per_second = (writes_completed[1]-writes_completed[0])/SLEEP_TIME;
+    disk.reads_per_second = (reads_completed_successfully[1] - reads_completed_successfully[0] / SLEEP_TIME);
+    disk.writes_per_second = (writes_completed[1] - writes_completed[0]) / SLEEP_TIME;
 
     return &disk;
 }
@@ -156,9 +160,9 @@ memInfo* get_memory_usage()
     double used_mem = total_mem - free_mem;
     double mem_usage_percent = (used_mem / total_mem) * 100.0;
 
-    mem.memAvailable = free_mem/1000; // en MB
-    mem.memUsed = used_mem/1000;      // en MB
-    mem.memTotal = total_mem/1000;    // en MB
+    mem.memAvailable = free_mem / 1000; // en MB
+    mem.memUsed = used_mem / 1000;      // en MB
+    mem.memTotal = total_mem / 1000;    // en MB
     mem.percentage = mem_usage_percent;
 
     return &mem;

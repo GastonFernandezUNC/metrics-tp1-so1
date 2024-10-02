@@ -13,7 +13,8 @@
 /*
     Struct to save the memory information
 */
-typedef struct{
+typedef struct
+{
     unsigned long long memTotal;
     unsigned long long memUsed;
     unsigned long long memAvailable;
@@ -23,7 +24,8 @@ typedef struct{
 /*
     Struct to save the disk information
 */
-typedef struct{
+typedef struct
+{
     unsigned long long reads_completed_successfully;
     unsigned long long writes_completed;
     unsigned long long reads_per_second;
@@ -33,24 +35,26 @@ typedef struct{
 /*
     Struct to save the network information
 */
-typedef struct{
+typedef struct
+{
     unsigned long long rx_bytes;
     unsigned long long tx_bytes;
     unsigned long long rx_packets;
     unsigned long long tx_packets;
     unsigned long long rx_errors;
     unsigned long long tx_errors;
-}netStats;
+} netStats;
 
 /*
     Struct to save the processes information
 */
-typedef struct{
+typedef struct
+{
 
     unsigned long long running_processes;
     unsigned long long context_switching;
 
-}proc_stats;
+} proc_stats;
 
 /*
     static values to be accessed from the functions
