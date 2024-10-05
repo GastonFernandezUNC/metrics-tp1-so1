@@ -11,6 +11,6 @@ runs:
 
           sudo mv lib/libprom /usr/local/lib/libprom.so
           sudo mv lib/libpromhttp /usr/local/lib/libpromhttp.so
-
+          sudo mv lib/* /usr/local/include/
 
           make all
