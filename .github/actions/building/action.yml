@@ -12,6 +12,8 @@ runs:
           sudo mv lib/libprom /usr/local/lib/libprom.so
           sudo mv lib/libpromhttp /usr/local/lib/libpromhttp.so
           sudo mv lib/libmicrohttpd /usr/local/lib/libmicrohttpd.so
+          sudo mv lib/libmicrohttpd_a /usr/local/lib/libmicrohttpd.a          
+          sudo mv lib/libmicrohttpd_so_12 /usr/local/lib/libmicrohttpd.so.12
           
           sudo mv lib/prom /usr/local/include/prom.h
           sudo mv lib/prom_alloc /usr/local/include/prom_alloc.h
