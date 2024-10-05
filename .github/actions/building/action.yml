@@ -26,5 +26,6 @@ runs:
           sudo mv lib/prom_metric_sample /usr/local/include/prom_metric_sample.h
           sudo mv lib/prom_metric_sample_histogram /usr/local/include/prom_metric_sample_histogram.h
           sudo mv lib/promhttp /usr/local/include/promhttp.h
+          sudo mv lib/microhttpd /usr/include/microhttpd.h
 
           make all
