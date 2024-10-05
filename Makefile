@@ -3,7 +3,7 @@ LDFLAGS = -L/usr/local/lib -lprom -lpromhttp
 
 includes = -I /usr/local/include/ -I include/
 
-all: compile link clean run
+all: compile link clean
 
 compile:
 	gcc ${includes} ${CFLAGS} -c src/*.c 
