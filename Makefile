@@ -9,7 +9,7 @@ compile:
 	gcc ${includes} ${CFLAGS} -c src/*.c 
 
 link:
-	gcc ${includes} *.o -o metrics ${LDFLAGS}
+	gcc *.o -o metrics ${LDFLAGS}
 
 exprt:
 	export LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
