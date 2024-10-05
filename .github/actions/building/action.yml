@@ -9,4 +9,8 @@ runs:
         run: |
           SRC_FOLDER=$(pwd)/src
 
+          sudo mv lib/libprom /usr/local/lib/libprom.so
+          sudo mv lib/libpromhttp /usr/local/lib/libpromhttp.so
+
+
           make all
