@@ -227,11 +227,11 @@ void _init_memory_metrics()
 {
 
     memMetrics.memory_percentage_metric =
-        prom_gauge_new("memory_usage_percentage_in_MG", "Porcentaje de uso de memoria_en_MG", 0, NULL);
-    memMetrics.memory_available_metric = prom_gauge_new("available_memory_in_MG", "Memoria Disponible_en_MG", 0, NULL);
-    memMetrics.memory_used_metric = prom_gauge_new("currently_used_memory_in_MG", "Memoria utilizada_en_MG", 0, NULL);
+        prom_gauge_new("memory_usage_percentage_in_MB", "Porcentaje de uso de memoria_en_MB", 0, NULL);
+    memMetrics.memory_available_metric = prom_gauge_new("available_memory_in_MB", "Memoria Disponible_en_MB", 0, NULL);
+    memMetrics.memory_used_metric = prom_gauge_new("currently_used_memory_in_MB", "Memoria utilizada_en_MB", 0, NULL);
     memMetrics.memory_total_metric =
-        prom_gauge_new("Total_memory_amount_in_MG", "Cantidad Total de Memoria_en_MG", 0, NULL);
+        prom_gauge_new("Total_memory_amount_in_MB", "Cantidad Total de Memoria_en_MB", 0, NULL);
 
     prom_collector_registry_must_register_metric(memMetrics.memory_percentage_metric);
     prom_collector_registry_must_register_metric(memMetrics.memory_available_metric);

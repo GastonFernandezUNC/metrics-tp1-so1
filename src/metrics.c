@@ -85,7 +85,7 @@ diskStats* get_disk_usage()
     char device_name[NAME_LENGHT];
 
     // It reads 2 times to get the difference between the values
-    // that's why it's an array of 2    
+    // that's why it's an array of 2
     unsigned long long reads_completed_successfully[2], writes_completed[2];
     unsigned long long reads_per_second = 0, writes_per_second = 0;
     unsigned long long trash;

@@ -13,9 +13,9 @@
  */
 #define BUFFER_SIZE 256 // Tamaño del buffer para leer archivos
 
-/*
-* @brief 
-*/
+/**
+ * @brief Maximum length of the device name.
+ */
 #define NAME_LENGHT 32
 
 /*
