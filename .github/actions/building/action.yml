@@ -10,6 +10,10 @@ runs:
           MAIN_FOLDER=$(pwd)
           SRC_FOLDER=$(pwd)/src
 
+          sudo apt update
+          sudo apt install libmicrohttpd-dev
+
+          cd $MAIN_FOLDER
           cd lib/prom/ && mkdir build && cd build
           cmake ..
           make && sudo make install
@@ -19,24 +23,5 @@ runs:
           cmake ..
           make && sudo make install      
 
-          sudo apt update
-          sudo apt install libmicrohttpd-dev
-
           cd $MAIN_FOLDER
-
-          sudo mv headers/lib/prom                            /usr/local/include/prom.h
-          sudo mv headers/lib/prom_alloc                      /usr/local/include/prom_alloc.h
-          sudo mv headers/lib/prom_collector                  /usr/local/include/prom_collector.h
-          sudo mv headers/lib/prom_collector_registry         /usr/local/include/prom_collector_registry.h
-          sudo mv headers/lib/prom_counter                    /usr/local/include/prom_counter.h
-          sudo mv headers/lib/prom_gauge                      /usr/local/include/prom_gauge.h
-          sudo mv headers/lib/prom_histogram                  /usr/local/include/prom_histogram.h
-          sudo mv headers/lib/prom_histogram_buckets          /usr/local/include/prom_histogram_buckets.h
-          sudo mv headers/lib/prom_linked_list                /usr/local/include/prom_linked_list.h
-          sudo mv headers/lib/prom_map                        /usr/local/include/prom_map.h
-          sudo mv headers/lib/prom_metric                     /usr/local/include/prom_metric.h
-          sudo mv headers/lib/prom_metric_sample              /usr/local/include/prom_metric_sample.h
-          sudo mv headers/lib/prom_metric_sample_histogram    /usr/local/include/prom_metric_sample_histogram.h
-          sudo mv headers/lib/promhttp                        /usr/local/include/promhttp.h
-
           make all
