@@ -1,6 +1,6 @@
 #include "metrics.h"
 
-#define SLEEP_TIME 1.5
+#define SLEEP_TIME 1
 
 proc_stats* get_procStats_usage()
 {
@@ -41,7 +41,7 @@ netStats* get_net_usage()
 {
     FILE* fp;
     char buffer[BUFFER_SIZE];
-    char device_name[32];
+    char device_name[NAME_LENGHT];
     unsigned long long rx_bytes = 0, rx_packets = 0, rx_errors = 0, tx_bytes = 0, tx_packets = 0, tx_errors = 0;
     unsigned long long trash;
 
@@ -82,7 +82,10 @@ diskStats* get_disk_usage()
 {
     FILE* fp;
     char buffer[BUFFER_SIZE];
-    char device_name[32];
+    char device_name[NAME_LENGHT];
+
+    // It reads 2 times to get the difference between the values
+    // that's why it's an array of 2    
     unsigned long long reads_completed_successfully[2], writes_completed[2];
     unsigned long long reads_per_second = 0, writes_per_second = 0;
     unsigned long long trash;

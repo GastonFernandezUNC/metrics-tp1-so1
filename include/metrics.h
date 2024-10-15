@@ -14,6 +14,11 @@
 #define BUFFER_SIZE 256 // Tamaño del buffer para leer archivos
 
 /*
+* @brief 
+*/
+#define NAME_LENGHT 32
+
+/*
     Struct to save the memory information
 */
 /**
