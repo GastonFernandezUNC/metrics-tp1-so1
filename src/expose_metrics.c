@@ -1,7 +1,7 @@
 #include "expose_metrics.h"
 
 /** Mutex para sincronización de hilos */
-pthread_mutex_t lock;
+pthread_mutex_t lock, fifo_lock;
 
 /** Métrica de Prometheus para el uso de CPU */
 static prom_gauge_t* cpu_usage_metric;
@@ -297,21 +297,31 @@ void _write_fifo(){
     int fd;
     ssize_t bytesWritten;
     char buffer[FIFO_BUFFER_SIZE];
+
+    double cpu = get_cpu_usage();
+    memInfo* mem = get_memory_usage();
+    diskStats* disk = get_disk_usage();
+    netStats* net = get_net_usage();
+    proc_stats* proc = get_procStats_usage();
+
+    pthread_mutex_lock(&fifo_lock);
     fd = open(PATH_TO_FIFO, O_WRONLY);
     if (fd == -1)
     {
         perror("Could not open the FIFO");        
     }
 
-    char* message = "AOSDIJA\n", *end = "status_stop\n";
+    char* message = memInfo_toString(mem), *end = "status_stop";
     
     bytesWritten = write(fd, message, strlen(message));
     bytesWritten = write(fd, end, strlen(end));
-    // if (bytesWritten == -1)
-    // {
-    //     perror("write");
-    // }
-    close(PATH_TO_FIFO);
+    printf("%s",end);
+    if (bytesWritten == -1)
+    {
+        perror("write");
+    }
+    close(fd);
+    pthread_mutex_unlock(&fifo_lock);
 }
 
 void _read_fifo(){
@@ -326,10 +336,14 @@ void _read_fifo(){
         exit(EXIT_FAILURE);
     }
 
-    char* command = read(fd, buffer, sizeof(buffer) - 1);
-
-    if(strncasecmp(command, "status", strlen("status")) == 0){
-        _write_fifo();
+    while ((bytesRead = read(fd, buffer, sizeof(buffer) - 1)) > 0)
+    {
+        buffer[bytesRead] = '\0'; // Asegurarse de terminar la cadena
+        // Procesar el mensaje si coincide con "status"
+        if (strncasecmp(buffer, "status", strlen("status")) == 0)
+        {
+            _write_fifo();
+        }
     }
 }
 
@@ -360,16 +374,15 @@ void init_metrics()
 
 void* monitoring(void* arg)
 {
-    (void)arg; // Argumento no utilizado
-
     while (1)
     {
-        // _read_fifo();
+        _read_fifo();
     }
 }
 
 // Destruimos el mutex
 void destroy_mutex()
 {
+    pthread_mutex_destroy(&fifo_lock);
     pthread_mutex_destroy(&lock);
 }

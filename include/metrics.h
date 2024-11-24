@@ -48,6 +48,8 @@ typedef struct
 
 } memInfo;
 
+char* memInfo_toString(memInfo* memory);
+
 /*
     Struct to save the disk information
 */
@@ -77,6 +79,8 @@ typedef struct
     unsigned long long writes_per_second;
 
 } diskStats;
+
+char* diskStats_toString(diskStats* disco);
 
 /**
  * @brief Struct to save the network statistics.
@@ -115,6 +119,8 @@ typedef struct
 
 } netStats;
 
+char* netStats_toString(netStats* network);
+
 /*
     Struct to save the processes information
 */
@@ -134,6 +140,8 @@ typedef struct
     unsigned long long context_switching;
 
 } proc_stats;
+
+char* procStats_toString(proc_stats* proc);
 
 /*
     static values to be accessed from the functions
