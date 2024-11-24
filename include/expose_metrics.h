@@ -11,12 +11,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
+#include <fcntl.h>
+
 
 /**
  * @brief Size of the buffer used for storing data.
  */
 #define BUFFER_SIZE 256
+
+#define PATH_TO_FIFO "/tmp/monitor_fifo"
+#define FIFO_BUFFER_SIZE 1024
+#define FILE_PERMISSIONS 0666
 
 /**
  * @brief Actualiza las métricas de running processes
@@ -50,6 +57,8 @@ void update_memory_gauge();
  * @return NULL
  */
 void* expose_metrics(void* arg);
+
+void* monitoring(void* arg);
 
 /**
  * @brief Inicializar mutex y métricas.

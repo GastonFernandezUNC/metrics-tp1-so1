@@ -16,6 +16,7 @@ exprt:
 
 clean:
 	rm *.o
+	mv metrics bin/metrics
 
 run:
 	./metrics

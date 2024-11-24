@@ -5,6 +5,7 @@
 
 #include "expose_metrics.h"
 #include <stdbool.h>
+// #include <cjson/cJSON.h>
 
 /**
  * @brief sleep
@@ -25,9 +26,22 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
+
+    // Hilo para mantener leyendo la FIFO sin interrumpir al resto
+    pthread_t tid2;
+    if (pthread_create(&tid2, NULL, monitoring, NULL) != 0)
+    {
+        fprintf(stderr, "Algo se rompió\n");
+        return EXIT_FAILURE;
+    }
+
     // Call the function to initialize the metrics
     init_metrics();
     // Bucle principal para actualizar las métricas cada segundo
+
+
+
+
     while (true)
     {
         update_cpu_gauge();

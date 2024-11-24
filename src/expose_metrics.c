@@ -292,6 +292,48 @@ void _init_procStats_metrics()
     prom_collector_registry_must_register_metric(statsMetrics.running_processes_metrics);
 }
 
+void _write_fifo(){
+
+    int fd;
+    ssize_t bytesWritten;
+    char buffer[FIFO_BUFFER_SIZE];
+    fd = open(PATH_TO_FIFO, O_WRONLY);
+    if (fd == -1)
+    {
+        perror("Could not open the FIFO");        
+    }
+
+    char* message = "AOSDIJA\n", *end = "status_stop\n";
+    
+    bytesWritten = write(fd, message, strlen(message));
+    bytesWritten = write(fd, end, strlen(end));
+    // if (bytesWritten == -1)
+    // {
+    //     perror("write");
+    // }
+    close(PATH_TO_FIFO);
+}
+
+void _read_fifo(){
+
+    char buffer[FIFO_BUFFER_SIZE];
+    int fd;
+    ssize_t bytesRead;
+    fd = open(PATH_TO_FIFO, O_RDONLY);
+    if (fd == -1)
+    {
+        perror("open");
+        exit(EXIT_FAILURE);
+    }
+
+    char* command = read(fd, buffer, sizeof(buffer) - 1);
+
+    if(strncasecmp(command, "status", strlen("status")) == 0){
+        _write_fifo();
+    }
+}
+
+
 // Inicializamos el mutex y las métricas
 void init_metrics()
 {
@@ -314,6 +356,16 @@ void init_metrics()
     _init_disk_metrics();
     _init_net_metrics();
     _init_procStats_metrics();
+}
+
+void* monitoring(void* arg)
+{
+    (void)arg; // Argumento no utilizado
+
+    while (1)
+    {
+        // _read_fifo();
+    }
 }
 
 // Destruimos el mutex
