@@ -10,7 +10,7 @@
 /**
  * @brief sleep
  */
-#define SLEEP_TIME 1
+//#define SLEEP_TIME 1
 
 /**
  * @brief main
@@ -27,9 +27,17 @@ int main(int argc, char* argv[])
     }
 
 
+    // Initialize the json structure
+    json_handler* json_struct = malloc(sizeof(json_handler));
+        json_struct->refresh_time = 1;
+        json_struct->cpu = true;
+        json_struct->mem = true;
+        json_struct->disk = true;
+        json_struct->net = true;
+        json_struct->proc = true;
     // Hilo para mantener leyendo la FIFO sin interrumpir al resto
     pthread_t tid2;
-    if (pthread_create(&tid2, NULL, monitoring, NULL) != 0)
+    if (pthread_create(&tid2, NULL, monitoring, json_struct) != 0)
     {
         fprintf(stderr, "Algo se rompió\n");
         return EXIT_FAILURE;
@@ -49,7 +57,7 @@ int main(int argc, char* argv[])
         update_disk_gauge();
         update_net_gauge();
         update_procStats_gauge();
-        sleep(SLEEP_TIME);
+        sleep(json_struct->refresh_time);
     }
 
     /**

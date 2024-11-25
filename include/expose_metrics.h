@@ -4,6 +4,7 @@
  */
 
 #include "metrics.h"
+#include "cjson_handler.h"
 #include <errno.h>
 #include <prom.h>
 #include <promhttp.h>

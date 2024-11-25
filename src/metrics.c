@@ -240,26 +240,25 @@ double get_cpu_usage()
     return cpu_usage_percent;
 }
 
-char* memInfo_toString(memInfo* memory){
-    char* str = (char*)malloc(100);
-    sprintf(str, "Total: %llu, Available: %llu, Used: %llu, Percentage: %llu\n", memory->memTotal, memory->memAvailable, memory->memUsed, memory->percentage);
-    return str;
+void memInfo_toString(memInfo* memory, char *buffer, size_t bufferSize){
+
+    snprintf(buffer, bufferSize, "Total: %llu, Available: %llu, Used: %llu, Percentage: %llu\n", memory->memTotal, memory->memAvailable, memory->memUsed, memory->percentage);
 }
 
-char* diskStats_toString(diskStats* disco){
-    char* str = (char*)malloc(100);
+char* diskStats_toString(diskStats* disco, char *buffer, size_t bufferSize){
+    char* str = (char*)malloc(BUFFER_SIZE);
     sprintf(str, "Reads: %llu, Writes: %llu, Reads/s: %llu, Writes/s: %llu\n", disco->reads_completed_successfully, disco->writes_completed, disco->reads_per_second, disco->writes_per_second);
     return str;
 }
 
-char* netStats_toString(netStats* network){
-    char* str = (char*)malloc(100);
+char* netStats_toString(netStats* network, char *buffer, size_t bufferSize){
+    char* str = (char*)malloc(BUFFER_SIZE);
     sprintf(str, "RX: %llu, TX: %llu, RX packets: %llu, TX packets: %llu, RX errors: %llu, TX errors: %llu\n", network->rx_bytes, network->tx_bytes, network->rx_packets, network->tx_packets, network->rx_errors, network->tx_errors);
     return str;
 }
 
-char* procStats_toString(proc_stats* proc){
-    char* str = (char*)malloc(100);
+char* procStats_toString(proc_stats* proc, char *buffer, size_t bufferSize){
+    char* str = (char*)malloc(BUFFER_SIZE);
     sprintf(str, "Running processes: %llu, Context switching: %llu\n", proc->running_processes, proc->context_switching);
     return str;
 }

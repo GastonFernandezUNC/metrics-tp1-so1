@@ -187,11 +187,11 @@ void update_net_gauge()
 void update_procStats_gauge()
 {
 
-    proc_stats stat = *get_procStats_usage();
+    proc_stats _stat = *get_procStats_usage();
 
     pthread_mutex_lock(&lock);
-    prom_gauge_set(statsMetrics.context_switching_metrics, stat.context_switching, NULL);
-    prom_gauge_set(statsMetrics.running_processes_metrics, stat.running_processes, NULL);
+    prom_gauge_set(statsMetrics.context_switching_metrics, _stat.context_switching, NULL);
+    prom_gauge_set(statsMetrics.running_processes_metrics, _stat.running_processes, NULL);
     pthread_mutex_unlock(&lock);
 }
 
@@ -292,48 +292,132 @@ void _init_procStats_metrics()
     prom_collector_registry_must_register_metric(statsMetrics.running_processes_metrics);
 }
 
-void _write_fifo(){
+void _write_fifo(json_handler* json_struct){
+
+
+    pthread_mutex_lock(&fifo_lock);
+    
+    _get_json(json_struct);
+    read_json_content(json_struct);
 
     int fd;
     ssize_t bytesWritten;
     char buffer[FIFO_BUFFER_SIZE];
 
-    double cpu = get_cpu_usage();
-    memInfo* mem = get_memory_usage();
-    diskStats* disk = get_disk_usage();
-    netStats* net = get_net_usage();
-    proc_stats* proc = get_procStats_usage();
+    // char m_cpu  [BUFFER_SIZE];
+    char m_mem  [BUFFER_SIZE];
+    // char m_disk [BUFFER_SIZE];
+    // char m_net  [BUFFER_SIZE];
+    // char m_proc [BUFFER_SIZE];
+    // double cpu = 0;
+    memInfo*    mem = NULL;
+    // diskStats*  disk = NULL;
+    // netStats*   net = NULL;
+    // proc_stats* proc = NULL;
 
-    pthread_mutex_lock(&fifo_lock);
+    // // if(json_struct->cpu == true){
+    // //     cpu = get_cpu_usage();
+    // //     m_cpu = cpu;
+    // // }
+
+    if(json_struct->mem == true){
+        mem = get_memory_usage();
+        memInfo_toString(mem, m_mem, sizeof(m_mem));
+    }
+
+    // if(json_struct->disk == true){
+    //     disk = get_disk_usage();
+    //     m_disk = diskStats_toString(disk);
+    // }
+
+    // if(json_struct->net == true){
+    //     net = get_net_usage();
+    //     m_net = netStats_toString(net);
+    // }
+
+    // if(json_struct->proc == true){
+    //     proc = get_procStats_usage();
+    //     m_proc = procStats_toString(proc);
+    // }
+
     fd = open(PATH_TO_FIFO, O_WRONLY);
     if (fd == -1)
     {
         perror("Could not open the FIFO");        
     }
-
-    char* message = memInfo_toString(mem), *end = "status_stop";
     
-    bytesWritten = write(fd, message, strlen(message));
+    // if(m_cpu != ""){
+    //     // bytesWritten = write(fd, m_cpu, strlen(m_cpu));
+    //     printf("\n%s",m_cpu);
+    //     if (bytesWritten == -1)
+    //     {
+    //         perror("write");
+    //     }
+    // }
+    if(m_mem != NULL){
+        // bytesWritten = write(fd, m_mem, strlen(m_mem));
+        printf("\n%s",m_mem);
+        if (bytesWritten == -1)
+        {
+            perror("write");
+        }
+    }
+    // if(m_disk != ""){
+    //     bytesWritten = write(fd, m_disk, strlen(m_disk));
+    //     if (bytesWritten == -1)
+    //     {
+    //         perror("write");
+    //     }
+    // }
+    // if(m_net != ""){
+    //     // bytesWritten = write(fd, m_net, strlen(m_net));
+    //     printf("\n%s",m_net);
+    //     if (bytesWritten == -1)
+    //     {
+    //         perror("write");
+    //     }
+    // }
+    // if(m_proc != ""){
+    //     // bytesWritten = write(fd, m_proc, strlen(m_proc));
+    //     printf("\n%s",m_proc);
+    //     if (bytesWritten == -1)
+    //     {
+    //         perror("write");
+    //     }
+    // }
+        
+    char *end = "status_stop";
     bytesWritten = write(fd, end, strlen(end));
-    printf("%s",end);
+    printf("\n\n%s\n\n",end);
     if (bytesWritten == -1)
     {
         perror("write");
     }
+
+    char *clean_message = "clean\n";
+    bytesWritten = write(fd, clean_message, strlen(clean_message));
+    printf("\n\n%s\n\n",clean_message);
+    if (bytesWritten == -1)
+    {
+        perror("write");
+    }
+
+    // printf("escribiendo en fifo");
     close(fd);
+    //free(m_mem); //free(m_cpu);  free(m_disk); free(m_net); free(m_proc);
     pthread_mutex_unlock(&fifo_lock);
 }
 
-void _read_fifo(){
+void _read_fifo(json_handler* json_struct){
 
     char buffer[FIFO_BUFFER_SIZE];
     int fd;
     ssize_t bytesRead;
     fd = open(PATH_TO_FIFO, O_RDONLY);
-    if (fd == -1)
+    while(fd == -1)
     {   
         mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
-        return _read_fifo();
+        return _read_fifo(json_struct);
     }
 
     while ((bytesRead = read(fd, buffer, sizeof(buffer) - 1)) > 0)
@@ -342,7 +426,10 @@ void _read_fifo(){
         // Procesar el mensaje si coincide con "status"
         if (strncasecmp(buffer, "status", strlen("status")) == 0)
         {
-            _write_fifo();
+            close(fd);
+            _write_fifo(json_struct);
+            fd = open(PATH_TO_FIFO, O_RDONLY);
+
         }
     }
 }
@@ -374,9 +461,9 @@ void init_metrics()
 
 void* monitoring(void* arg)
 {
-
-    mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
-    _read_fifo();
+    json_handler* json_struct = (json_handler*)arg;
+    // mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
+    _read_fifo(json_struct);
     // while (1){}
 }
 

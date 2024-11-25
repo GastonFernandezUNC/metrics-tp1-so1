@@ -48,7 +48,7 @@ typedef struct
 
 } memInfo;
 
-char* memInfo_toString(memInfo* memory);
+void memInfo_toString(memInfo* memory, char *buffer, size_t bufferSize);
 
 /*
     Struct to save the disk information
@@ -80,7 +80,8 @@ typedef struct
 
 } diskStats;
 
-char* diskStats_toString(diskStats* disco);
+char* diskStats_toString(diskStats* disco, char *buffer, size_t bufferSize);
+
 
 /**
  * @brief Struct to save the network statistics.
@@ -119,7 +120,7 @@ typedef struct
 
 } netStats;
 
-char* netStats_toString(netStats* network);
+char* netStats_toString(netStats* network, char *buffer, size_t bufferSize);
 
 /*
     Struct to save the processes information
@@ -141,7 +142,7 @@ typedef struct
 
 } proc_stats;
 
-char* procStats_toString(proc_stats* proc);
+char* procStats_toString(proc_stats* proc, char *buffer, size_t bufferSize);
 
 /*
     static values to be accessed from the functions
