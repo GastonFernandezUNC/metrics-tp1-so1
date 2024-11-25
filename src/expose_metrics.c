@@ -331,9 +331,9 @@ void _read_fifo(){
     ssize_t bytesRead;
     fd = open(PATH_TO_FIFO, O_RDONLY);
     if (fd == -1)
-    {
-        perror("open");
-        exit(EXIT_FAILURE);
+    {   
+        mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
+        return _read_fifo();
     }
 
     while ((bytesRead = read(fd, buffer, sizeof(buffer) - 1)) > 0)
@@ -374,10 +374,10 @@ void init_metrics()
 
 void* monitoring(void* arg)
 {
-    while (1)
-    {
-        _read_fifo();
-    }
+
+    mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
+    _read_fifo();
+    // while (1){}
 }
 
 // Destruimos el mutex

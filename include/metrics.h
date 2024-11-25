@@ -147,7 +147,7 @@ char* procStats_toString(proc_stats* proc);
     static values to be accessed from the functions
 */
 
-static proc_stats stat; // struct to save the process information
+static proc_stats _stat; // struct to save the process information
 static memInfo mem;     // struct to save the memory information
 static diskStats disk;  // struct to save the disk information
 static netStats net;    // struct to save the network information

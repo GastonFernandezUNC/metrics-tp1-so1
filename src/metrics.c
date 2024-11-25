@@ -31,10 +31,10 @@ proc_stats* get_procStats_usage()
 
     fclose(fp);
 
-    stat.running_processes = running_processes;
-    stat.context_switching = context_switching;
+    _stat.running_processes = running_processes;
+    _stat.context_switching = context_switching;
 
-    return &stat;
+    return &_stat;
 }
 
 netStats* get_net_usage()
