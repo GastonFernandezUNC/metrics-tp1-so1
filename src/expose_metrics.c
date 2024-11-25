@@ -294,7 +294,6 @@ void _init_procStats_metrics()
 
 void _write_fifo(json_handler* json_struct){
 
-
     pthread_mutex_lock(&fifo_lock);
     
     _get_json(json_struct);
@@ -304,41 +303,48 @@ void _write_fifo(json_handler* json_struct){
     ssize_t bytesWritten;
     char buffer[FIFO_BUFFER_SIZE];
 
-    // char m_cpu  [BUFFER_SIZE];
-    char m_mem  [BUFFER_SIZE];
-    // char m_disk [BUFFER_SIZE];
-    // char m_net  [BUFFER_SIZE];
-    // char m_proc [BUFFER_SIZE];
-    // double cpu = 0;
-    memInfo*    mem = NULL;
-    // diskStats*  disk = NULL;
-    // netStats*   net = NULL;
-    // proc_stats* proc = NULL;
+    double cpu = get_cpu_usage();
+    memInfo mem = *get_memory_usage();
+    diskStats  disk = *get_disk_usage();
+    netStats   net = *get_net_usage();
+    proc_stats proc = *get_procStats_usage();
 
-    // // if(json_struct->cpu == true){
-    // //     cpu = get_cpu_usage();
-    // //     m_cpu = cpu;
-    // // }
-
-    if(json_struct->mem == true){
-        mem = get_memory_usage();
-        memInfo_toString(mem, m_mem, sizeof(m_mem));
+    if(json_struct->cpu == true){
+        printf("\nCPU:"
+                "\n-  CPU USAGE = %f",cpu);
     }
 
-    // if(json_struct->disk == true){
-    //     disk = get_disk_usage();
-    //     m_disk = diskStats_toString(disk);
-    // }
+    if(json_struct->mem == true){
+        printf("\nMEM:"
+                "\n-  MEMORY PERCENTAGE = %llu"
+                "\n-  MEMORY TOTAL = %llu"
+                "\n-  MEMORY AVAILABLE = %llu"
+                "\n-  MEMORY USED = %llu",mem.percentage,mem.memTotal,mem.memAvailable,mem.memUsed);
+    }
 
-    // if(json_struct->net == true){
-    //     net = get_net_usage();
-    //     m_net = netStats_toString(net);
-    // }
+    if(json_struct->disk == true){
+        printf("\nDISK:"
+                "\n-  READS COMPLETED SUCCESSFULLY = %llu"
+                "\n-  WRITES COMPLETED = %llu"
+                "\n-  READS PER SECOND = %llu"
+                "\n-  WRITES PER SECOND = %llu",disk.reads_completed_successfully,disk.writes_completed,disk.reads_per_second,disk.writes_per_second);
+    }
 
-    // if(json_struct->proc == true){
-    //     proc = get_procStats_usage();
-    //     m_proc = procStats_toString(proc);
-    // }
+    if(json_struct->net == true){
+        printf("\nNET:"
+                "\n-  RX BYTES = %llu"
+                "\n-  TX BYTES = %llu"
+                "\n-  RX PACKETS = %llu"
+                "\n-  TX PACKETS = %llu"
+                "\n-  RX ERRORS = %llu"
+                "\n-  TX ERRORS = %llu",net.rx_bytes,net.tx_bytes,net.rx_packets,net.tx_packets,net.rx_errors,net.tx_errors);
+    }
+
+    if(json_struct->proc == true){
+        printf("\nPROC:"
+                "\n-  CONTEXT SWITCHING = %llu"
+                "\n-  RUNNING PROCESSES = %llu",proc.context_switching,proc.running_processes);
+    }
 
     fd = open(PATH_TO_FIFO, O_WRONLY);
     if (fd == -1)
@@ -346,46 +352,6 @@ void _write_fifo(json_handler* json_struct){
         perror("Could not open the FIFO");        
     }
     
-    // if(m_cpu != ""){
-    //     // bytesWritten = write(fd, m_cpu, strlen(m_cpu));
-    //     printf("\n%s",m_cpu);
-    //     if (bytesWritten == -1)
-    //     {
-    //         perror("write");
-    //     }
-    // }
-    if(m_mem != NULL){
-        // bytesWritten = write(fd, m_mem, strlen(m_mem));
-        printf("\n%s",m_mem);
-        if (bytesWritten == -1)
-        {
-            perror("write");
-        }
-    }
-    // if(m_disk != ""){
-    //     bytesWritten = write(fd, m_disk, strlen(m_disk));
-    //     if (bytesWritten == -1)
-    //     {
-    //         perror("write");
-    //     }
-    // }
-    // if(m_net != ""){
-    //     // bytesWritten = write(fd, m_net, strlen(m_net));
-    //     printf("\n%s",m_net);
-    //     if (bytesWritten == -1)
-    //     {
-    //         perror("write");
-    //     }
-    // }
-    // if(m_proc != ""){
-    //     // bytesWritten = write(fd, m_proc, strlen(m_proc));
-    //     printf("\n%s",m_proc);
-    //     if (bytesWritten == -1)
-    //     {
-    //         perror("write");
-    //     }
-    // }
-        
     char *end = "status_stop";
     bytesWritten = write(fd, end, strlen(end));
     printf("\n\n%s\n\n",end);
@@ -394,13 +360,13 @@ void _write_fifo(json_handler* json_struct){
         perror("write");
     }
 
-    char *clean_message = "clean\n";
-    bytesWritten = write(fd, clean_message, strlen(clean_message));
-    printf("\n\n%s\n\n",clean_message);
-    if (bytesWritten == -1)
-    {
-        perror("write");
-    }
+    // char *clean_message = "clean\n";
+    // bytesWritten = write(fd, clean_message, strlen(clean_message));
+    // printf("\n\n%s\n\n",clean_message);
+    // if (bytesWritten == -1)
+    // {
+    //     perror("write");
+    // }
 
     // printf("escribiendo en fifo");
     close(fd);

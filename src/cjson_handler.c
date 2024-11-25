@@ -10,6 +10,7 @@ int _get_json(json_handler* json_struct)
     fp = fopen(PATH_TO_CONFIG_FILE, "r");
     if (fp == NULL)
     {
+        printf("%s\n", PATH_TO_CONFIG_FILE);
         perror("Error opening file CONFIG");
         return -1;
     }
@@ -67,30 +68,33 @@ void read_json_content(json_handler* json_struct)
     if (metrics)
     {
         cJSON* cpu = cJSON_GetObjectItem(metrics, "cpu");
-        cJSON* mem = cJSON_GetObjectItem(metrics, "memory");
+        if (cJSON_IsObject(cpu)) {
+            cJSON* enabled = cJSON_GetObjectItemCaseSensitive(cpu, "enabled");
+            json_struct->cpu = cJSON_IsTrue(enabled);
+        }
+        
+        cJSON* memory = cJSON_GetObjectItem(metrics, "memory");
+        if (cJSON_IsObject(memory)) {
+            cJSON* enabled = cJSON_GetObjectItemCaseSensitive(memory, "enabled");
+            json_struct->mem = cJSON_IsTrue(enabled);
+        }
+        
         cJSON* disk = cJSON_GetObjectItem(metrics, "disk");
-        cJSON* net = cJSON_GetObjectItem(metrics, "network");
-        cJSON* proc = cJSON_GetObjectItem(metrics, "proc_stats");
+        if (cJSON_IsObject(disk)) {
+            cJSON* enabled = cJSON_GetObjectItemCaseSensitive(disk, "enabled");
+            json_struct->disk = cJSON_IsTrue(enabled);
+        }
 
-        if (cpu)
-        {
-            json_struct->cpu = cJSON_IsTrue(cpu);
+        cJSON* network = cJSON_GetObjectItem(metrics, "network");
+        if (cJSON_IsObject(network)) {
+            cJSON* enabled = cJSON_GetObjectItemCaseSensitive(network, "enabled");
+            json_struct->net = cJSON_IsTrue(enabled);
         }
-        if (mem)
-        {
-            json_struct->mem = cJSON_IsTrue(mem);
+        cJSON* proc_stats = cJSON_GetObjectItem(metrics, "proc_stats");
+        if (cJSON_IsObject(proc_stats)) {
+            cJSON* enabled = cJSON_GetObjectItemCaseSensitive(proc_stats, "enabled");
+            json_struct->proc = cJSON_IsTrue(enabled);
         }
-        if (disk)
-        {
-            json_struct->disk = cJSON_IsTrue(disk);
-        }
-        if (net)
-        {
-            json_struct->net = cJSON_IsTrue(net);
-        }
-        if (proc)
-        {
-            json_struct->proc = cJSON_IsTrue(proc);
-        }
+
     }
 }
