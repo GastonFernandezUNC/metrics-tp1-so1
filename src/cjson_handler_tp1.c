@@ -57,10 +57,12 @@ int _get_json(json_handler* json_struct)
 
 void read_json_content(json_handler* json_struct)
 {
+    // define the json object. Access the metrics object and the refresh_time object.
     cJSON* json = json_struct->json;
     cJSON* metrics = cJSON_GetObjectItem(json, "metrics");
     cJSON* refresh_time = cJSON_GetObjectItem(json, "refresh_time");
 
+    // check if the objects are valid, and get the values.
     if (refresh_time)
     {
         json_struct->refresh_time = refresh_time->valueint;

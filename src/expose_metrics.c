@@ -292,96 +292,105 @@ void _init_procStats_metrics()
     prom_collector_registry_must_register_metric(statsMetrics.running_processes_metrics);
 }
 
-void _write_fifo(json_handler* json_struct){
+// Funcion para escribir en la fifo y print en la shell
+void _write_fifo(json_handler* json_struct)
+{
 
     pthread_mutex_lock(&fifo_lock);
-    
+
+    // lee el json y lo transforma en un objeto parseable
     _get_json(json_struct);
+
+    //  lee los valores del json
     read_json_content(json_struct);
 
     int fd;
     ssize_t bytesWritten;
-    // char buffer[FIFO_BUFFER_SIZE];
 
     double cpu = get_cpu_usage();
     memInfo mem = *get_memory_usage();
-    diskStats  disk = *get_disk_usage();
-    netStats   net = *get_net_usage();
+    diskStats disk = *get_disk_usage();
+    netStats net = *get_net_usage();
     proc_stats proc = *get_procStats_usage();
 
-    if(json_struct->cpu == true){
+    // Si el objeto está habilitado, imprime los valores
+    if (json_struct->cpu == true)
+    {
         printf("\nCPU:"
-                "\n-  CPU USAGE = %f",cpu);
+               "\n-  CPU USAGE = %f",
+               cpu);
     }
 
-    if(json_struct->mem == true){
+    if (json_struct->mem == true)
+    {
         printf("\nMEM:"
-                "\n-  MEMORY PERCENTAGE = %llu"
-                "\n-  MEMORY TOTAL = %llu"
-                "\n-  MEMORY AVAILABLE = %llu"
-                "\n-  MEMORY USED = %llu",mem.percentage,mem.memTotal,mem.memAvailable,mem.memUsed);
+               "\n-  MEMORY PERCENTAGE = %llu"
+               "\n-  MEMORY TOTAL = %llu"
+               "\n-  MEMORY AVAILABLE = %llu"
+               "\n-  MEMORY USED = %llu",
+               mem.percentage, mem.memTotal, mem.memAvailable, mem.memUsed);
     }
 
-    if(json_struct->disk == true){
+    if (json_struct->disk == true)
+    {
         printf("\nDISK:"
-                "\n-  READS COMPLETED SUCCESSFULLY = %llu"
-                "\n-  WRITES COMPLETED = %llu"
-                "\n-  READS PER SECOND = %llu"
-                "\n-  WRITES PER SECOND = %llu",disk.reads_completed_successfully,disk.writes_completed,disk.reads_per_second,disk.writes_per_second);
+               "\n-  READS COMPLETED SUCCESSFULLY = %llu"
+               "\n-  WRITES COMPLETED = %llu"
+               "\n-  READS PER SECOND = %llu"
+               "\n-  WRITES PER SECOND = %llu",
+               disk.reads_completed_successfully, disk.writes_completed, disk.reads_per_second, disk.writes_per_second);
     }
 
-    if(json_struct->net == true){
+    if (json_struct->net == true)
+    {
         printf("\nNET:"
-                "\n-  RX BYTES = %llu"
-                "\n-  TX BYTES = %llu"
-                "\n-  RX PACKETS = %llu"
-                "\n-  TX PACKETS = %llu"
-                "\n-  RX ERRORS = %llu"
-                "\n-  TX ERRORS = %llu",net.rx_bytes,net.tx_bytes,net.rx_packets,net.tx_packets,net.rx_errors,net.tx_errors);
+               "\n-  RX BYTES = %llu"
+               "\n-  TX BYTES = %llu"
+               "\n-  RX PACKETS = %llu"
+               "\n-  TX PACKETS = %llu"
+               "\n-  RX ERRORS = %llu"
+               "\n-  TX ERRORS = %llu",
+               net.rx_bytes, net.tx_bytes, net.rx_packets, net.tx_packets, net.rx_errors, net.tx_errors);
     }
 
-    if(json_struct->proc == true){
+    if (json_struct->proc == true)
+    {
         printf("\nPROC:"
-                "\n-  CONTEXT SWITCHING = %llu"
-                "\n-  RUNNING PROCESSES = %llu",proc.context_switching,proc.running_processes);
+               "\n-  CONTEXT SWITCHING = %llu"
+               "\n-  RUNNING PROCESSES = %llu",
+               proc.context_switching, proc.running_processes);
     }
 
+    // Abre el archivo fifo
     fd = open(PATH_TO_FIFO, O_WRONLY);
     if (fd == -1)
     {
-        perror("Could not open the FIFO");        
+        perror("Could not open the FIFO");
     }
-    
-    char *end = "status_stop";
+
+    // Le ordena detenerse
+    char* end = "status_stop";
     bytesWritten = write(fd, end, strlen(end));
-    printf("\n\n%s\n\n",end);
+    printf("\n\n%s\n\n", end);
     if (bytesWritten == -1)
     {
         perror("write");
     }
 
-    // char *clean_message = "clean\n";
-    // bytesWritten = write(fd, clean_message, strlen(clean_message));
-    // printf("\n\n%s\n\n",clean_message);
-    // if (bytesWritten == -1)
-    // {
-    //     perror("write");
-    // }
-
-    // printf("escribiendo en fifo");
     close(fd);
-    //free(m_mem); //free(m_cpu);  free(m_disk); free(m_net); free(m_proc);
     pthread_mutex_unlock(&fifo_lock);
 }
 
-void _read_fifo(json_handler* json_struct){
+// Funcion para leer la fifo
+void _read_fifo(json_handler* json_struct)
+{
 
     char buffer[FIFO_BUFFER_SIZE];
     int fd;
     ssize_t bytesRead;
     fd = open(PATH_TO_FIFO, O_RDONLY);
-    while(fd == -1)
-    {   
+    while (fd == -1)
+    {
         mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
         return _read_fifo(json_struct);
     }
@@ -392,14 +401,15 @@ void _read_fifo(json_handler* json_struct){
         // Procesar el mensaje si coincide con "status"
         if (strncasecmp(buffer, "status", strlen("status")) == 0)
         {
+            // Cierra la fifo para lectura
             close(fd);
+            // Escribe en la fifo
             _write_fifo(json_struct);
+            // Abre la fifo para lectura nuevamente
             fd = open(PATH_TO_FIFO, O_RDONLY);
-
         }
     }
 }
-
 
 // Inicializamos el mutex y las métricas
 void init_metrics()
@@ -425,12 +435,11 @@ void init_metrics()
     _init_procStats_metrics();
 }
 
+// Función del hilo para leer la FIFO, esperar a que se escriba algo en ella y actualizar las métricas
 void* monitoring(void* arg)
 {
     json_handler* json_struct = (json_handler*)arg;
-    // mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
     _read_fifo(json_struct);
-    // while (1){}
     return NULL;
 }
 

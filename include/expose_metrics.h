@@ -17,7 +17,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include <libgen.h> 
 
 
 /**
@@ -25,8 +25,19 @@
  */
 #define BUFFER_SIZE 256
 
+/**
+ * @brief Path to the FIFO file.
+ */
 #define PATH_TO_FIFO "/tmp/monitor_fifo"
+
+/**
+ * @brief Size of the buffer used for storing data for the FIFO.
+ */
 #define FIFO_BUFFER_SIZE 1024
+
+/**
+ * @brief File permissions for the FIFO.
+ */
 #define FILE_PERMISSIONS 0666
 
 /**
@@ -62,6 +73,11 @@ void update_memory_gauge();
  */
 void* expose_metrics(void* arg);
 
+/**
+ * @brief Función del hilo para leer la FIFO, esperar a que se escriba algo en ella y actualizar las métricas.
+ * @param arg Argumento usado para transmitir los datos contenidos en el JSON.
+ * @return NULL
+ */
 void* monitoring(void* arg);
 
 /**
