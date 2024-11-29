@@ -2,6 +2,11 @@
 
 #define SLEEP_TIME 1
 
+proc_stats _stat;
+memInfo mem;
+diskStats disk;
+netStats net;
+
 proc_stats* get_procStats_usage()
 {
     FILE* fp;
@@ -30,7 +35,7 @@ proc_stats* get_procStats_usage()
     }
 
     fclose(fp);
-
+    
     _stat.running_processes = running_processes;
     _stat.context_switching = context_switching;
 
@@ -43,7 +48,7 @@ netStats* get_net_usage()
     char buffer[BUFFER_SIZE];
     char device_name[NAME_LENGHT];
     unsigned long long rx_bytes = 0, rx_packets = 0, rx_errors = 0, tx_bytes = 0, tx_packets = 0, tx_errors = 0;
-    unsigned long long trash;
+    // unsigned long long trash;
 
     // Abrir el archivo /proc/diskstats
     fp = fopen("/proc/net/dev", "r");
@@ -87,7 +92,6 @@ diskStats* get_disk_usage()
     // It reads 2 times to get the difference between the values
     // that's why it's an array of 2
     unsigned long long reads_completed_successfully[2], writes_completed[2];
-    unsigned long long reads_per_second = 0, writes_per_second = 0;
     unsigned long long trash;
 
     // Abrir el archivo /proc/diskstats

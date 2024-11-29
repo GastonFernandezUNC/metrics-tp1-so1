@@ -52,6 +52,7 @@ int _get_json(json_handler* json_struct)
     json_struct->json = cJSON_Parse(content);
     fclose(fp);
     free(content);
+    return EXIT_SUCCESS;
 }
 
 void read_json_content(json_handler* json_struct)

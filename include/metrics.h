@@ -139,10 +139,10 @@ typedef struct
     static values to be accessed from the functions
 */
 
-static proc_stats _stat; // struct to save the process information
-static memInfo mem;     // struct to save the memory information
-static diskStats disk;  // struct to save the disk information
-static netStats net;    // struct to save the network information
+// static proc_stats _stat; // struct to save the process information
+// static memInfo mem;     // struct to save the memory information
+// static diskStats disk;  // struct to save the disk information
+// static netStats net;    // struct to save the network information
 
 /**
  * @brief Retrieves the usage statistics of the process.

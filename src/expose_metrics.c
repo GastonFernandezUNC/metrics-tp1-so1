@@ -301,7 +301,7 @@ void _write_fifo(json_handler* json_struct){
 
     int fd;
     ssize_t bytesWritten;
-    char buffer[FIFO_BUFFER_SIZE];
+    // char buffer[FIFO_BUFFER_SIZE];
 
     double cpu = get_cpu_usage();
     memInfo mem = *get_memory_usage();
@@ -431,6 +431,7 @@ void* monitoring(void* arg)
     // mkfifo(PATH_TO_FIFO, FILE_PERMISSIONS);
     _read_fifo(json_struct);
     // while (1){}
+    return NULL;
 }
 
 // Destruimos el mutex

@@ -14,6 +14,9 @@ set(CMAKE_C_FLAGS_DEBUG "-g -pthread")
 include_directories(include)
 include_directories(include/cjson)
 
+add_subdirectory(lib/prom)
+add_subdirectory(lib/promhttp)
+
 link_directories(/usr/local/lib)
 
 find_package(cJSON REQUIRED)
