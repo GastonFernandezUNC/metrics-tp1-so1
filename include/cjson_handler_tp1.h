@@ -12,7 +12,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define PATH_TO_CONFIG_FILE "../config.json"
+#define PATH_TO_CONFIG_FILE "metrics-tp1-so1/config.json"
 
 /**
  * @brief Initial size for the buffer.
