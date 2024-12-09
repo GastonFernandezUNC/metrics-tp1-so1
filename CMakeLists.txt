@@ -16,6 +16,7 @@ include_directories(include/cjson)
 
 add_subdirectory(lib/prom)
 add_subdirectory(lib/promhttp)
+add_subdirectory(memory_main)
 
 link_directories(/usr/local/lib)
 
