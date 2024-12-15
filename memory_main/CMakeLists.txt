@@ -11,4 +11,6 @@ include_directories(include)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_FLAGS_DEBUG "-g -pthread")
 
-add_executable(${PROJECT_NAME} src/main.c src/functions.c)
+add_executable(${PROJECT_NAME} src/functions.c)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE memory)

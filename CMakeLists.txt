@@ -23,7 +23,7 @@ link_directories(/usr/local/lib)
 find_package(cJSON REQUIRED)
 find_package(unity REQUIRED)
 
-add_executable(${PROJECT_NAME} src/main.c src/expose_metrics.c src/metrics.c src/cjson_handler_tp1.c)
+add_executable(${PROJECT_NAME} src/main.c  src/expose_metrics.c src/metrics.c src/cjson_handler_tp1.c)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cjson::cjson)
 target_link_libraries(${PROJECT_NAME} PRIVATE unity::unity)

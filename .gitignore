@@ -11,10 +11,10 @@ metrics
 *.so
 
 # Build directory
-/build/
+build/
 
 # External directoy
-/external/
+external/
 
 # Dependency files
 *.d
